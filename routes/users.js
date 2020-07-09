@@ -26,7 +26,7 @@ router.post('/', async (req, res) => {
 
     await user.save();
 
-    // send jwt in header when register is ok
+    // send jwt in header when register is completed
     const token = user.generateAuthToken();
     res.header('x-auth-token', token).send(_.pick(user, ['name', 'email']));
   } catch (err) {
