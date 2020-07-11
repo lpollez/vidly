@@ -1,4 +1,4 @@
-require('express-async-errors');
+require('express-async-errors'); // wrapper express handlers to catch async errors
 const express = require('express');
 const mongoose = require('mongoose');
 const config = require('config');
@@ -13,6 +13,17 @@ const users = require('./routes/users');
 const auth = require('./routes/auth');
 
 const app = express();
+
+// to log uncaught exceptions
+// rem : node process is ended (best practice to clean internal state). It will have to be restart !
+winston.handleExceptions(
+  new winston.transports.File({ filename: 'uncaughtExceptions.log' })
+);
+
+// to manage unhandle promise rejection
+process.on('unhandledRejection', ex => {
+  throw ex; // throw to winston.handleExceptions
+});
 
 if (!config.get('jwtPrivateKey')) {
   console.error('FATAL ERROR : jwtPrivateKey is not defined');
@@ -35,7 +46,7 @@ app.use('/api/movies', movies);
 app.use('/api/rentals', rentals);
 app.use('/api/users', users);
 app.use('/api/auth', auth);
-app.use(error);
+app.use(error); // middleware to manage express errors
 
 const port = process.env.port || 3000;
 app.listen(port, () => console.log(`Listening on port ${port}...`));
