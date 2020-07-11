@@ -3,6 +3,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const config = require('config');
 const error = require('./middlewares/error');
+const winston = require('winston');
+require('winston-mongodb');
 const genres = require('./routes/genres');
 const customers = require('./routes/customers');
 const movies = require('./routes/movies');
@@ -16,6 +18,10 @@ if (!config.get('jwtPrivateKey')) {
   console.error('FATAL ERROR : jwtPrivateKey is not defined');
   process.exit(1);
 }
+
+// transports
+winston.add(winston.transports.File, { filename: 'logfile.log' });
+winston.add(winston.transports.MongoDB, { db: 'mongodb://localhost/vidly' });
 
 mongoose
   .connect('mongodb://localhost/vidly')
