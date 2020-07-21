@@ -31,7 +31,7 @@ describe('/api/genres', () => {
   describe('GET /:id', () => {
     it('should return a genre if valid ID is passed', async () => {
       const genre = new Genre({ name: 'genre1' });
-      genre.save();
+      await genre.save();
 
       const res = await request(server).get(`/api/genres/${genre._id}`);
 
@@ -121,7 +121,7 @@ describe('/api/genres', () => {
     beforeEach(async () => {
       token = new User().generateAuthToken();
       genre = new Genre({ name: 'genre1' });
-      genre.save();
+      await genre.save();
       id = genre._id;
       newName = 'updatedName';
     });
@@ -197,7 +197,7 @@ describe('/api/genres', () => {
     beforeEach(async () => {
       token = new User({ isAdmin: true }).generateAuthToken();
       genre = new Genre({ name: 'genre1' });
-      genre.save();
+      await genre.save();
       id = genre._id;
     });
 
